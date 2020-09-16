@@ -26,6 +26,7 @@ resource "helm_release" "nginx" {
   # repository = "${data.helm_repository.vault.metadata[0].name}"
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart  = "ingress-nginx"
+  version = "2.16.0"
   create_namespace = false
   namespace = kubernetes_namespace.nginx.metadata.0.name
   force_update = true

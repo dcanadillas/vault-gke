@@ -47,7 +47,7 @@ server:
     GOOGLE_REGION: "${gcp_region}"
     GOOGLE_PROJECT: "${gcp_project}"
     GOOGLE_APPLICATION_CREDENTIALS: "/vault/userconfig/${kms_creds}/credentials.json"
-  # VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
+    VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
 
   # extraVolumes is a list of extra volumes to mount. These will be exposed
   # to Vault in the path `/vault/userconfig/<name>/`. The value below is

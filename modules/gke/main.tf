@@ -8,15 +8,18 @@
 #   name = "${var.cluster_name}-network"
 # }
 data "google_container_engine_versions" "k8sversion" {
-  # provider       = google-beta
+  provider = google-beta
+  project = var.project
   location       = var.regional_k8s ? var.region : var.zone
-  version_prefix = "1.17."
+  version_prefix = "1.16."
 }
 
 resource "google_container_cluster" "primary" {
+  # provider = google-beta
+  # project = var.project
   name     = var.cluster_name
   location = var.regional_k8s ? var.region : var.zone
-  node_version = data.google_container_engine_versions.k8sversion.release_channel_default_version.RAPID
+  # node_version = data.google_container_engine_versions.k8sversion.latest_node_version
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
   # node pool and immediately delete it.
@@ -25,7 +28,7 @@ resource "google_container_cluster" "primary" {
   # network = google_compute_network.vpc_network.self_link
   network = var.network
   subnetwork = var.subnetwork
-  min_master_version = data.google_container_engine_versions.k8sversion.release_channel_default_version.RAPID
+  min_master_version = data.google_container_engine_versions.k8sversion.latest_master_version
   master_auth {
     username = ""
     password = ""
@@ -59,7 +62,7 @@ resource "google_container_node_pool" "primary_nodes" {
   count = var.default_gke ? 0 : 1
   name       = "${var.cluster_name}-node-pool"
   location = google_container_cluster.primary.location
-  version = data.google_container_engine_versions.k8sversion.release_channel_default_version.RAPID
+  #version = data.google_container_engine_versions.k8sversion.latest_node_version
   # location   = var.regional_k8s == true ? var.region : var.zone
   cluster    = google_container_cluster.primary.name
   node_count = var.nodes
