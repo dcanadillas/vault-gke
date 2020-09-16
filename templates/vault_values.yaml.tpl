@@ -1,6 +1,6 @@
 global:
   enabled: true
-  tlsDisable: true
+  tlsDisable: ${disable_tls}
 injector:
   # True if you want to enable vault agent injection.
   enabled: false
@@ -106,7 +106,7 @@ server:
       config: |
         ui = true
         listener "tcp" {
-          # tls_disable = 1
+          tls_disable = ${disable_tls}
           address = "[::]:8200"
           cluster_address = "[::]:8201"
 %{ if tls == "enabled" ~}

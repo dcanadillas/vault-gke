@@ -123,6 +123,7 @@ resource "google_storage_bucket_object" "vault-config" {
             crypto_key = google_kms_crypto_key.crypto_key.name,
             kms_creds = kubernetes_secret.google-application-credentials.metadata[0].name,
             http = var.tls == "enabled" ? "https" : "http",
+            disable_tls = var.tls == "enabled" ? false : true,
             tls = var.tls
             })
   bucket = var.config_bucket
