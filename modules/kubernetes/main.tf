@@ -145,3 +145,26 @@ resource "google_storage_bucket_object" "nginx-config" {
 #           })
 #     filename = "${path.root}/templates/vault.yaml"
 # }
+
+
+data "kubernetes_ingress" "vault" {
+  depends_on = [
+    helm_release.vault,
+    helm_release.nginx,
+  ]
+  metadata {
+    name = helm_release.vault.name
+    namespace = helm_release.vault.namespace
+  }
+}
+
+resource "google_dns_record_set" "vault" {
+  count = var.dns_zone != null ? 1 : 0
+  name = var.hostname
+  type = "A"
+  ttl  = 300
+
+  managed_zone = var.dns_zone
+
+  rrdatas = [data.kubernetes_ingress.vault.load_balancer_ingress.0.ip]
+}

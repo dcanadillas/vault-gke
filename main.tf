@@ -59,7 +59,7 @@ module "k8s" {
   cluster_name = module.gke.cluster_name
   config_bucket = var.gcs_bucket
   # vault_repo ="hashicorp/vault-enterprise"
-  # vault_version = "1.5.0"
+  # vault_version = "1.5.2"
   hostname = var.vault_hostname
   nodes = var.vault_nodes
   gcp_service_account = data.google_service_account.owner_project
@@ -69,6 +69,7 @@ module "k8s" {
   vault_ca = var.vault_ca
   vault_key = var.vault_key
   tls = var.tls
+  dns_zone = var.dns_zone
 }
 
 resource "google_storage_bucket_object" "jx-requirements" {

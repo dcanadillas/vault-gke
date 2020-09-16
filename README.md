@@ -142,6 +142,7 @@ And last, and very important, configure your [workspace variables](https://www.t
     * `vault_ca`  -- Vault CA certificate used for signing the Vault certificate
     * `vault_key` *(check the `sensitive` option)* -- The Vault key of the certificate
     * `tls` -- enabled/disabled to enable TLS and use HTTPS (you need to provide de certificates if you enable it)
+    * `dns_zone`  -- Cloud DNS zone tu create the A record for your domain (If don't specify there is no record created)
 
 ### Uploading your variables to TFE/TFC
 You can also upload any variable with a POST Rest API request:

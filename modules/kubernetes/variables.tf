@@ -76,3 +76,7 @@ variable "vault_key" {
 variable "tls" {
   description = "Enabling/Disabling HTTPS"
 }
+variable "dns_zone" {
+  description = "Cloud DNS zone to create record"
+  default = null
+}

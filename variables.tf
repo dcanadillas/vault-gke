@@ -65,3 +65,7 @@ variable "tls" {
   description = "Enable/Disable TLS"
   default = "disabled"
 }
+variable "dns_zone" {
+  description = "Cloud DNS zone to create record"
+  default = null
+}
