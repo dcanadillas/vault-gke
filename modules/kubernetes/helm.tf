@@ -1,6 +1,7 @@
 resource "helm_release" "vault" {
   depends_on = [
       kubernetes_secret.google-application-credentials,
+      helm_release.nginx
   ]
   name = "vault"
   # Depending on deprecation of data.helm_repository
@@ -18,9 +19,9 @@ resource "helm_release" "vault" {
 
 # Using the "Kubernetes Ingres NGINX" https://github.com/kubernetes/ingress-nginx
 resource "helm_release" "nginx" {
-  depends_on = [
-      helm_release.vault,
-  ]
+  # depends_on = [
+  #     helm_release.vault,
+  # ]
   name = "ingress-nginx"
   # Depending on deprecation of data.helm_repository
   # repository = "${data.helm_repository.vault.metadata[0].name}"

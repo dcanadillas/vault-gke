@@ -110,7 +110,7 @@ resource "kubernetes_secret" "certs" {
 
 # Because we are executing remotely using TFC/TFE we want to save our templates in a Cloud bucket
 resource "google_storage_bucket_object" "vault-config" {
-  name   = "${var.cluster_name}.yml"
+  name   = "${var.cluster_name}-${formatdate("YYMMDD_HHmm",timestamp())}.yml"
   content = templatefile("${path.root}/templates/vault_values.yaml.tpl",{
             hostname = var.hostname,
             vault_nodes = var.nodes
@@ -130,7 +130,7 @@ resource "google_storage_bucket_object" "vault-config" {
 }
 
 resource "google_storage_bucket_object" "nginx-config" {
-  name   = "${var.cluster_name}-nginx.yml"
+  name   = "${var.cluster_name}-${formatdate("YYMMDD_HHmm",timestamp())}.yml"
   content = templatefile("${path.root}/templates/nginx.yaml.tpl",{
             vault_namespace = kubernetes_namespace.vault.metadata.0.name,
             })
@@ -147,20 +147,29 @@ resource "google_storage_bucket_object" "nginx-config" {
 # }
 
 
-data "kubernetes_ingress" "vault" {
+# We need to create a sleep to let the ingress Load Balancer be assigned, so we can get the Ingress data
+resource "time_sleep" "wait_60_seconds" {
   depends_on = [
     helm_release.vault,
     helm_release.nginx,
   ]
+
+  create_duration = "60s"
+}
+
+data "kubernetes_ingress" "vault" {
+  depends_on = [
+    time_sleep.wait_60_seconds
+  ]
   metadata {
     name = helm_release.vault.name
-    namespace = helm_release.vault.namespace
+    namespace = helm_release.vault.metadata.0.namespace
   }
 }
 
 resource "google_dns_record_set" "vault" {
   count = var.dns_zone != null ? 1 : 0
-  name = var.hostname
+  name = "${var.hostname}."
   type = "A"
   ttl  = 300
 
